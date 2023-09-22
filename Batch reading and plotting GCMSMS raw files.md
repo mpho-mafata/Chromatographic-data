@@ -1,4 +1,4 @@
-# Bacth reading and plotting GC-MS/MS data from cdf files
+# Batch reading and plotting GC-MS/MS data from cdf files
 
 This tiny script is intended for retrieving and visualizing information from chromatographic raw files.
 
@@ -19,13 +19,13 @@ library("htmlwidgets")
 gcms_beers <-
   data.frame(
     filename = list.files(
-      "C:/Users/mafata/Desktop/WORK/Collaborative Work/Cody/Untargeted - Gin and Beer/raw_data/Beer"
+      "C:/Users/~/Beer"
     )
   )
 gcms_beers <- gcms_beers %>%
   mutate(
     filepath = paste0(
-      "C:/Users/mafata/Desktop/WORK/Collaborative Work/Cody/Untargeted - Gin and Beer/raw_data/Beer/",
+      "C:/Users/~/Beer/",
       filename
     )
   )
