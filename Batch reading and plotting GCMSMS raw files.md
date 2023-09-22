@@ -101,7 +101,9 @@ ggplot(
     labels = scales::scientific_format()
   ) 
 ```
-
+<img src="./gc_msms_figures/tic_overlay.jpg">
+  <figcaption>Total ion count (TIC) chromatogram overlay of 90 samples.</figcaption>
+  
 ## create a list of mz spectra for every sample
 
 ```
@@ -154,4 +156,5 @@ mass_spec_linegraph <-
   scale_y_continuous(breaks = seq(from = 0, to = max(bind_rows(mz_list, .id = "data_frame")$intensity_values), length = 10 ),
                      labels = scales::scientific_format())
 ```
-  ![Create mz_overlay](/mz_overlay.jpg)
+  <img src="./gc_msms_figures/mz_overlay.jpg">
+   <figcaption>Mass-to-charge (mz) chromatogram overlay of 90 samples.</figcaption>
