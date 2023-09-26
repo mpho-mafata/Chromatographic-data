@@ -11,6 +11,7 @@ library("plotly")
 library("glue")
 library("hrbrthemes")
 library("htmlwidgets")
+library("RNetCDF")
 ```
 
 ## import the data files as a list and import the contained data using ncdf4 package into a list.
@@ -29,13 +30,27 @@ gcms_beers <- gcms_beers %>%
       filename
     )
   )
+# Read files using ncdf4
 gcms_beers_data <- lapply(gcms_beers$filepath, nc_open)
 names(gcms_beers_data) <- gcms_beers$filename
+
+# Read files using RNetCDF
+gcms_beers_data <- lapply(gcms_beers$filepath, open.nc)
+  names(gcms_beers_data) <- gcms_beers$filename
+gcms_beers_data_list <- list()
+for (i in 1:length(gcms_beers_data))
+  {
+    gcms_beers_data_i <- read.nc(gcms_beers_data[[i]])
+    gcms_beers_data_list[[i]] <- c(gcms_beers_data_i)
+  }
+  names(gcms_beers_data_list ) <- gcms_beers$filename
 ```
 
 ## create a list of retention time (tic) data frames for every sample
 
+
 ```
+# using ncdf4
 tic_list <- list() 
 for (i in 1:length(gcms_beers_data))
 {
@@ -55,6 +70,23 @@ for (i in 1:length(gcms_beers_data))
   tic_list[[i]] <- data.frame(scan_acquisition_time, total_intensity)
 }
 names(tic_list) <- gcms_beers$filename
+
+# using RNetCDF
+  tic_list <- list() 
+  for (i in 1:length(gcms_beers_data_list))
+  {
+    scan_acquisition_time <- as.data.frame(var.get.nc(ncfile = gcms_beers_data[[i]], 
+                                                      variable = "scan_acquisition_time"))
+    total_intensity <- as.data.frame(var.get.nc(ncfile = gcms_beers_data[[i]], 
+                                                      variable = "total_intensity"))
+    tic_list[[i]] <- data.frame(scan_acquisition_time, total_intensity)
+    colnames(tic_list[[i]])[colnames(tic_list[[i]])=="var.get.nc.ncfile...gcms_beers_data..i....variable....scan_acquisition_time.."] =
+    "Retention_time_min"
+    colnames(tic_list[[i]])[colnames(tic_list[[i]]) == "var.get.nc.ncfile...gcms_beers_data..i....variable....total_intensity.."] =
+      "total_intensity"
+  }
+  names(tic_list) <- gcms_beers$filename
+
 ```
 
 ## graph the tic retention time spectra as an overlay
@@ -101,12 +133,14 @@ ggplot(
     labels = scales::scientific_format()
   ) 
 ```
-<img src="./gc_msms_figures/tic_overlay.jpg">
+  <img src="./gc_msms_figures/tic_overlay.jpg">
   <figcaption>Total ion count (TIC) chromatogram overlay of 90 samples.</figcaption>
   
 ## create a list of mz spectra for every sample
 
 ```
+# using ncdf4
+
 mz_list <- list()
 for (i in 1:length(gcms_beers_data))
 {
@@ -121,6 +155,23 @@ for (i in 1:length(gcms_beers_data))
   mz_list[[i]] <- data.frame(mz_values, mz_intensity_values)
 }
 names(mz_list) <- gcms_beers$filename
+
+# using RNetCDF
+  mz_list <- list()
+  for (i in 1:length(gcms_beers_data_list))
+  {
+    mz_values <- as.data.frame(var.get.nc(ncfile = gcms_beers_data[[i]], 
+                                          variable = "mass_values"))
+    
+    mz_intensity_values <- as.data.frame(var.get.nc(ncfile = gcms_beers_data[[i]], 
+                                                    variable = "intensity_values"))
+    mz_list[[i]] <- data.frame(mz_values, mz_intensity_values)
+    colnames(mz_list[[i]])[colnames(mz_list[[i]])=="var.get.nc.ncfile...gcms_beers_data..i....variable....mass_values.."] =
+      "mass_value"
+    colnames(mz_list[[i]])[colnames(mz_list[[i]]) == "var.get.nc.ncfile...gcms_beers_data..i....variable....intensity_values.."] =
+      "intensity_values"
+  }
+  names(mz_list) <- gcms_beers$filename
 ```
 
 ## graph the mass spectra as an overlay
