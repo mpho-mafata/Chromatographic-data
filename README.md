@@ -13,13 +13,15 @@ Then we have a look at our spectra using *__ggplot2__*. __The input dataframe fo
 <table>
  <tr>
 <td>
-  <img height="200" width="400" src="./gc_msms_figures/tic_overlay.jpg" hspace="20">
+  <img height="200" width="350" src="./gc_msms_figures/tic_overlay.jpg" hspace="20">
+ <br clear="left"/>
   <figcaption>Total ion count (TIC) chromatogram overlay of 90 samples.</figcaption>
 </td>
 
 
 <td>
-  <img height="200" width="400"  src="./gc_msms_figures/mz_overlay.jpg" hspace="20">
+  <img height="200" width="350"  src="./gc_msms_figures/mz_overlay.jpg" hspace="20">
+ <br clear="left"/>
    <figcaption>Mass-to-charge (mz) chromatogram overlay of 90 samples.</figcaption>
 </td>
  </tr>
@@ -33,13 +35,15 @@ In this section we look at the different profiles we get from the two sets of ex
 <table>
  <tr>
 <td>
-  <img height="200" width="400" src="./gc_msms_figures/rt_pca_scores.jpg" hspace="20">
+  <img height="200" width="350" src="./gc_msms_figures/rt_pca_scores.jpg" hspace="20">
+ <br clear="left"/>
   <figcaption>Prinicpal component analysis (PCA) scores plot of retention time spectra of 90 beer samples.</figcaption>
 </td>
 
 
 <td>
-  <img height="200" width="400"  src="./gc_msms_figures/mz_pca_scores.jpg" hspace="20">
+  <img height="200" width="350"  src="./gc_msms_figures/mz_pca_scores.jpg" hspace="20">
+ <br clear="left"/>
    <figcaption>Prinicpal component analysis (PCA) scores plot of mas-to-charge spectra of 90 beer samples.</figcaption>
 </td>
  </tr>
