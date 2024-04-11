@@ -28,7 +28,7 @@ Then we have a look at our spectra using *__ggplot2__*. __The input dataframe fo
 
 ## Section 2: [Multivariate Analysis: Comparing the difference between retention time and mass-to-charge profiles](https://github.com/mpho-mafata/Chromatographic-data/blob/main/Multivariate%20analysis%20of%20RT%20and%20MZ%20data.md)
 
-In this section we look at the different profiles we get from the two sets of extracted data using principal component analysis "(PCA). __The retention time spectra has 249,361 variables while the mass-to-charge has 3385 variables__.
+In this section we look at the different profiles we get from the two sets of extracted data using principal component analysis(PCA). __The retention time spectra has 249,361 variables while the mass-to-charge has 3385 variables__.
 
 <table>
  <tr>
