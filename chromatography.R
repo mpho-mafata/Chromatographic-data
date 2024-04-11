@@ -290,6 +290,9 @@ setwd("/Users/mphomafata/Documents/GitHub/cody_analysis/chromatography")
     dpi = 300
   )
   browseURL("mz_pca_scores.jpg")
+  
+  coeffRV(as.data.frame(beer_rt_pca$ind),as.data.frame(beer_mz_pca$ind))
+  coeffRV(xcms_online_beer,beer_set_results)
    
 }
 
