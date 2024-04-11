@@ -3,7 +3,7 @@
 ## Introduction
 Documents short codes for small chromatography related tasks such as reading and visualizing raw data files for mass spec, UV, and fluorescence data. 
 Chromatographic data is often produced in batches of large data files. This can be contained in .aia formats containg one or multiple cdf files.
-The first section will be reading our data files and then exploring them.
+The first section will be reading our data files and then exploring them. This will be followed by multivariate analysis on seperate spectra, combined spectra, and using [bioconductor bioinformatics libraries](https://bioconductor.org/packages/3.8/bioc/html/xcms.html).
 
 ## Section 1: [Batch reading and plotting GC-MS/MS data from cdf files](https://github.com/mpho-mafata/Chromatographic-data/blob/main/Batch%20reading%20and%20plotting%20GCMSMS%20raw%20files.md)
 
