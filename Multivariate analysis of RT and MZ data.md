@@ -137,3 +137,12 @@ beer_rt_pca <- PCA(rt_data, graph = FALSE)
 ```
 
   ![gc_msms_figures](gc_msms_figures/mz_pca_scores.jpg)
+  
+# rv coefficients
+to compare the two PCA, we caluclate the cofigurational similarity
+
+```
+  coeffRV(as.data.frame(beer_rt_pca$ind),as.data.frame(beer_mz_pca$ind))
+  coeffRV(xcms_online_beer,beer_set_results)
+   
+```
