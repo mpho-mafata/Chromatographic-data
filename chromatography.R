@@ -35,21 +35,19 @@ setwd("/Users/mphomafata/Documents/GitHub/cody_analysis/chromatography")
   
   # create a list of retention time (tic) data frames for every sample
   # using ncdf4
-  tic_list <- list() 
-  for (i in 1:length(gcms_beers_data)){
+  tic_list <- list()
+  for (i in 1:length(gcms_beers_data)) {
     tic_scan_index <-
-      as.data.frame(ncvar_get(
-        gcms_beers_data[[i]],
-        gcms_beers_data[[i]]$var$scan_index
-      ))
-    colnames(tic_scan_index)[colnames(tic_scan_index)=="ncvar_get(gcms_beers_data[[i]], gcms_beers_data[[i]]$var$scan_index)"] =
+      as.data.frame(ncvar_get(gcms_beers_data[[i]],
+                              gcms_beers_data[[i]]$var$scan_index))
+    colnames(tic_scan_index)[colnames(tic_scan_index) == "ncvar_get(gcms_beers_data[[i]], gcms_beers_data[[i]]$var$scan_index)"] =
       "tic_scan_index"
     scan_acquisition_time <-
       as.data.frame(ncvar_get(
         gcms_beers_data[[i]],
         gcms_beers_data[[i]]$var$scan_acquisition_time
       ))
-    colnames(scan_acquisition_time)[colnames(scan_acquisition_time)=="ncvar_get(gcms_beers_data[[i]], gcms_beers_data[[i]]$var$scan_acquisition_time)"] =
+    colnames(scan_acquisition_time)[colnames(scan_acquisition_time) == "ncvar_get(gcms_beers_data[[i]], gcms_beers_data[[i]]$var$scan_acquisition_time)"] =
       "Retention_time_min"
     scan_acquisition_time$Retention_time_min <-
       as.numeric(scan_acquisition_time$Retention_time_min) / 60
@@ -57,7 +55,8 @@ setwd("/Users/mphomafata/Documents/GitHub/cody_analysis/chromatography")
       as.data.frame(ncvar_get(gcms_beers_data[[i]], gcms_beers_data[[i]]$var$total_intensity))
     colnames(total_intensity)[colnames(total_intensity) == "ncvar_get(gcms_beers_data[[i]], gcms_beers_data[[i]]$var$total_intensity)"] =
       "total_intensity"
-    tic_list[[i]] <- data.frame(scan_acquisition_time, total_intensity)
+    tic_list[[i]] <-
+      data.frame(scan_acquisition_time, total_intensity)
   }
   names(tic_list) <- gcms_beers$filename
   
@@ -101,13 +100,15 @@ setwd("/Users/mphomafata/Documents/GitHub/cody_analysis/chromatography")
       length = 10
     ),
     labels = scales::scientific_format()
-  ) 
-  ggsave("tic_overlay.jpg",
-         plot = tic_linegraph,
-         width = 30,
-         height = 15,
-         units = 'cm',
-         dpi = 800)
+  )
+  ggsave(
+    "tic_overlay.jpg",
+    plot = tic_linegraph,
+    width = 30,
+    height = 15,
+    units = 'cm',
+    dpi = 800
+  )
   browseURL("tic_overlay.jpg")
   # saveWidget(ggplotly(tic_linegraph), file = "tic_overlay.html")
   # browseURL("tic_overlay.html")
@@ -115,7 +116,7 @@ setwd("/Users/mphomafata/Documents/GitHub/cody_analysis/chromatography")
   # create a list of mz spectra for every sample
   # using ncdf4
   mz_list <- list()
-  for (i in 1:length(gcms_beers_data)){
+  for (i in 1:length(gcms_beers_data)) {
     mz_values <-
       as.data.frame(ncvar_get(gcms_beers_data[[i]], gcms_beers_data[[i]]$var$mass_values))
     colnames(mz_values)[colnames(mz_values) == "ncvar_get(gcms_beers_data[[i]], gcms_beers_data[[i]]$var$mass_values)"] =
@@ -155,22 +156,29 @@ setwd("/Users/mphomafata/Documents/GitHub/cody_analysis/chromatography")
       ),
       legend.text = element_text(size = 10),
       legend.title = element_text(size = 10)
-    )+
+    ) +
     scale_x_continuous(breaks = seq(from = 50, to = 250, by = 10)) +
-    scale_y_continuous(breaks = seq(from = 0, to = max(bind_rows(mz_list, .id = "data_frame")$intensity_values), length = 10 ),
-                       labels = scales::scientific_format())
-  ggsave(glue("mz_overlay.jpg"),
-         plot = mass_spec_linegraph,
-         width = 30,
-         height = 15,
-         units = 'cm',
-         dpi = 300)
+    scale_y_continuous(
+      breaks = seq(
+        from = 0,
+        to = max(bind_rows(mz_list, .id = "data_frame")$intensity_values),
+        length = 10
+      ),
+      labels = scales::scientific_format()
+    )
+  ggsave(
+    glue("mz_overlay.jpg"),
+    plot = mass_spec_linegraph,
+    width = 30,
+    height = 15,
+    units = 'cm',
+    dpi = 300
+  )
   browseURL(glue("mz_overlay.jpg"))
   # saveWidget(ggplotly(mass_spec_linegraph), file = "mz_overlay.html")
   # browseURL("mz_overlay.html")
   
 }
-
 
 # SECTION 2: MULTIVARIATE ANALYSIS OF THE DATA
 {
@@ -291,15 +299,90 @@ setwd("/Users/mphomafata/Documents/GitHub/cody_analysis/chromatography")
   )
   browseURL("mz_pca_scores.jpg")
   
-  coeffRV(as.data.frame(beer_rt_pca$ind),as.data.frame(beer_mz_pca$ind))
-  coeffRV(xcms_online_beer,beer_set_results)
-   
+  coeffRV(as.data.frame(beer_rt_pca$ind),
+          as.data.frame(beer_mz_pca$ind))
+  coeffRV(xcms_online_beer, beer_set_results)
+  
 }
 
-# SECTION 3: XCMS PRE-PROCESSING OF THE DATA
+# SECTION 3: COLLATING THE RETENTION TIME AND MASS-TO-CHARGE
 {
+  rm(list = ls())#clear the environment to save on driver space and run faster
+  setwd("/Users/mphomafata/Documents/GitHub/chromatographic-data")
+  # Libraries needed to run the code
+  library("ncdf4")
+  library("glue")
+  library("dplyr")
+  # import the data files as a list and import the contained data using ncdf4 package into a list.
+  gcms_beers <-
+    data.frame(
+      filename = list.files(
+        "/Users/mphomafata/Documents/Work_file/Collaborative Work/Cody/Untargeted - Gin and Beer/raw_data/Beer"
+      )
+    )
+  gcms_beers <- gcms_beers %>% mutate(
+    filepath = paste0(
+      "/Users/mphomafata/Documents/Work_file/Collaborative Work/Cody/Untargeted - Gin and Beer/raw_data/Beer/",
+      filename
+    )
+  )
+  # Read files using ncdf4
+  gcms_beers_data <- lapply(gcms_beers$filepath, nc_open)
+  names(gcms_beers_data) <- gcms_beers$filename
+
+extracted_chroms <- list()
+for (k in 1:2){
+  # extract the time dimensional data for each mass-to-charge
+  nc = gcms_beers_data[[k]]
+  v3 = gcms_beers_data[[k]]$var$mass_values
+  varsize = v3$varsize
+  ndims   <- gcms_beers_data[[k]]$var$mass_values$ndims
+  nt      <- varsize[ndims]
   
-  # Thse installation instructions are adapted from https://bioconductor.org/packages/3.19/bioc/html/xcms.html 
+  # make a dataframe for each sample of the rt, mz, and related intensity values
+  chroms_list <- data.frame("mz","rt","intensity")
+  for (i in 1:nt) {
+    try(
+      {
+        # Initialize start and count to read one timestep of the variable.
+        start <- rep(1, ndims)
+        start[ndims] <- i
+        count <- varsize	# begin w/count=(nx,ny,nz,...,nt), reads entire var
+        count[ndims] <- 1	# change to count=(nx,ny,nz,...,1) to read 1 tstep
+        
+        # extract the values
+        mass_value <- ncvar_get(nc, v3, start = start, count= count)
+        rt_value <- ncvar_get(nc, nc$var$scan_acquisition_time, start = start, count= count)
+        mz_intensity <- ncvar_get(nc,nc$var$intensity_values, start = start, count= count)
+        
+        # add each triplet as a row to the chromatogram dataframe
+        chroms_list[nrow(chroms_list) + 1,] = c(mass_value, rt_value, mz_intensity)
+
+      },
+    silent = TRUE
+    )
+  }
+  extracted_chroms[[k]] <- chroms_list
+  print(glue("Sample {k} chromatogram has been extratcted"))
+  
+}
+# names(extracted_chroms) <- gcms_beers$filename
+
+}
+
+  library(plotly)
+  plot_ly( type = "scatter3d",
+           mode = "lines",
+           x=ectracted_chroms[[1]]$X.rt.,
+           y=ectracted_chroms[[1]]$X.mz.,
+           z=ectracted_chroms[[1]]$X.intensity.)%>%
+    layout(xaxis = list(title = 'Retention time (milliseconds)'),
+           yaxis = list(title = 'Mass-to-charge')
+           )
+
+# SECTION 4: XCMS PRE-PROCESSING OF THE DATA
+{
+  # These installation instructions are adapted from https://bioconductor.org/packages/3.19/bioc/html/xcms.html
   
   # pre-requirements to install packages if not previously installed
   # if (!require("BiocManager", quietly = TRUE))
@@ -308,10 +391,11 @@ setwd("/Users/mphomafata/Documents/GitHub/cody_analysis/chromatography")
   # BiocManager::install(version='3.18')
   # BiocManager::install("xcms")
   
-  # This method is adapted from https://sneumann.github.io/xcms/articles/xcms.html
+  # This method is adapted from https://sneumann.github.io/xcms/articles/xcms.html. # this is an immitation of the below
+  # and https://bioconductor.org/packages/release/bioc/vignettes/xcms/inst/doc/xcms.R
   
   rm(list = ls())#clear the environment to save on driver space and run faster
-  setwd("/Users/mphomafata/Documents/Work_file/Collaborative Work")
+  setwd("/Users/mphomafata/Documents/GitHub/Chromatographic-data")
   library(xcms)
   library(RColorBrewer)
   library(pander)
@@ -328,59 +412,81 @@ setwd("/Users/mphomafata/Documents/GitHub/cody_analysis/chromatography")
       recursive = TRUE,
       full = TRUE
     )
+  
+  pds <-
+    data.frame(sample_name = sub(
+      basename(beer_data),
+      pattern = ".CDF",
+      replacement = "",
+      fixed = TRUE
+    ))
+  
   # read the data file names from the paths and access the data in each file
-  pd <- data.frame(sample_name = sub(basename(beer_data), pattern = ".CDF",
-                                     replacement = "", fixed = TRUE),
-                   sample_group = c(rep("LAGER", 45), rep("ALE", 50)),
-                   stringsAsFactors = FALSE)
-  data <- readMsExperiment(spectraFiles = beer_data, sampleData = pd)
+  data <-
+    readMsExperiment(spectraFiles = beer_data, sampleData = pds)
   
-  # Peak alignment. The longest step in the analysis
-  xdata <- adjustRtime(data, param = ObiwarpParam(binSize = 0.6))
+  # chromatogram inspection
+  # it looks the same as our chromatogram inspection
+  spectra <- spectra(data)
+  base_peak_inspection <-
+    chromatogram(data, aggregationFun = "max") # about 2 minutes
+  plot(base_peak_inspection)
+  # base_peak_inspection[1,1]
+  # rtime(base_peak_inspection[1,1]) %>% head()
+  # intensity(base_peak_inspection[1,1]) %>%  head()
   
-  # extract the chromatograms of the aligned spectra
-  chr_raw <- chromatogram(xdata)
+  # Peak detection. the longest step so test with subset or with an eic.
+  # i tested with a region from 5 minutes to 14 minutes with peaks of different amplitudes
+  filter_data <-
+    data %>% filterRt(rt = c(300, 825)) %>% filterMz(mz = c(150, 250))
+  filter_data_inspection <-
+    chromatogram(filter_data, aggregationFun = "max")
+  plot(filter_data_inspection)
   
-  # Peak detection 
-  chr_peak <- findChromPeaks(chr_raw, param = CentWaveParam(snthresh = 2))
+  # define peak detection parameter
+  peak_detection_parameter <-
+    CentWaveParam(snthresh = 2,
+                  peakwidth = c(20, 80),
+                  noise = 5000)
+  xchr <-
+    findChromPeaks(filter_data_inspection, param = peak_detection_parameter)
+  # save the peaks data
+  chrom_peaks <- as.data.frame(chromPeaks(xchr))
+  writexl::write_xlsx(chrom_peaks, "extracted peaks.xlsx")
+  
+  summary_fun <- function(z)
+    c(peak_count = nrow(z), rt = quantile(z[, "rtmax"] - z[, "rtmin"]))
+  
+  T <- chromPeaks(xchr) |>
+    lapply(FUN = summary_fun) |>
+    do.call(what = rbind)
+  rownames(T) <- basename(fileNames(data))
+  pandoc.table(T)
+  
+  
+  
+  
+  
+  
+  
+  # INSPECTING FILTERED SPECTRA OR EXTRACTED ION
+  # for when you know the mass to charge
+  # inspection of a retention time window
+  # I chose hte first biggest peak at 13.5 retention time
+  filter_data <- filterRt(data, rt = c(796, 825))
+  filter_data_insection <-
+    chromatogram(filter_data, aggregationFun = "max")
+  plot(filter_data_insection)
+  
+  # "Extracted ion chromatogram for one peak."
+  # The same as the filter above, so what is the difference?
+  # here we can select for the mass-to-charge (mz), if known, and the rt.
+  chr_raw <- chromatogram(data, rt = c(796, 825))
+  plot(chr_raw)
   
   
 }
 
 
-
-
-
-
-
-
-
-
-# i NEED TO GET THE CORRESPONDING SCAN NUMBER FOR TH EMZ VALUES
-
-mz_scan_index <- as.data.frame(ncvar_get(nc=gcms_beers_data[[1]], varid=gcms_beers_data[[1]]$var$mass_value))
-colnames(mz_scan_index)[colnames(mz_scan_index) == "ncvar_get(gcms_beers_data[[1]], gcms_beers_data[[1]]$var$mass_values$scan_index)"] = "scan_index"
-
-nc = gcms_beers_data[[1]]
-v3 = gcms_beers_data[[1]]$var$mass_values
-varsize = v3$varsize
-ndims   <- gcms_beers_data[[1]]$var$mass_values$ndims
-nt      <- varsize[ndims]  # Remember timelike dim is always the LAST dimension!
-
-for( i in 1:nt ) {
-  # Initialize start and count to read one timestep of the variable.
-  start <- rep(1,ndims)	# begin with start=(1,1,1,...,1)
-  start[ndims] <- i	# change to start=(1,1,1,...,i) to read timestep i
-  count <- varsize	# begin w/count=(nx,ny,nz,...,nt), reads entire var
-  count[ndims] <- 1	# change to count=(nx,ny,nz,...,1) to read 1 tstep
-  data3 <- ncvar_get( nc, v3, start=start, count=count )
-  
-  # Now read in the value of the timelike dimension
-  timeval <- ncvar_get( nc, v3$dim[[ndims]]$name, start=i, count=1 )
-  
-  print(paste("Data for variable",v3$name,"at timestep",i,
-              " (time value=",timeval,v3$dim[[ndims]]$units,"):"))
-  print(data3)
-}
 
 
