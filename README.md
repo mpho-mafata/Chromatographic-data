@@ -48,3 +48,24 @@ In this section we look at the different profiles we get from the two sets of ex
 </td>
  </tr>
 </table>
+
+## Section 3: Collating the chromatogram and mass spectra
+In this section we collate the retention time chromatogram and the mass spectrum for a complete profile.
+<table>
+ <tr>
+<td>
+  <img height="300" width="400" src="./gc_msms_figures/3d_plot.png" hspace="20">
+ <br clear="left"/>
+  <figcaption>3D Collated chromatogram and mass spectrum.</figcaption>
+</td>
+
+
+<td>
+  <img height="300" width="400" src="./gc_msms_figures/2d_plot.jpg" hspace="20">
+ <br clear="left"/>
+   <figcaption>2D Collated chromatogram and mass spectrum.</figcaption>
+</td>
+ </tr>
+</table>
+
+  
