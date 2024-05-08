@@ -313,6 +313,8 @@ setwd("/Users/mphomafata/Documents/GitHub/cody_analysis/chromatography")
   library("ncdf4")
   library("glue")
   library("dplyr")
+  library("ggplot2")
+  library("htmlwidgets")
   # import the data files as a list and import the contained data using ncdf4 package into a list.
   gcms_beers <-
     data.frame(
@@ -331,7 +333,7 @@ setwd("/Users/mphomafata/Documents/GitHub/cody_analysis/chromatography")
   names(gcms_beers_data) <- gcms_beers$filename
 
 extracted_chroms <- list()
-for (k in 1:2){
+for (k in 1:length(gcms_beers_data)){
   # extract the time dimensional data for each mass-to-charge
   nc = gcms_beers_data[[k]]
   v3 = gcms_beers_data[[k]]$var$mass_values
@@ -366,19 +368,31 @@ for (k in 1:2){
   print(glue("Sample {k} chromatogram has been extratcted"))
   
 }
-# names(extracted_chroms) <- gcms_beers$filename
+ names(extracted_chroms) <- gcms_beers$filename
+
+# plot the spectrum
+  gc_data <- extracted_chroms[[2]]
+  colnames(gc_data) <- gc_data[1,]
+  gc_data <- gc_data[-1,]
+  gc_data$rt <- as.numeric(gc_data$rt)/60
+  gc_data$mz <-as.numeric(gc_data$mz)
+  gc_data$intensity <- as.numeric(gc_data$intensity)
+
+  my_plot <- ggplot(gc_data, aes(x=rt, y=mz, color = intensity)) + geom_point(size = 0.5)+
+    theme_bw()+ xlab("Retention time (minutes)") + ylab("Mass-to-charge") + scale_colour_gradient(low = "green", high = "red", na.value = NA)
+  ggsave(filename = "2d_plot.jpg", plot = my_plot)
+
+  my_interactive_plot <- plot_ly(
+    gc_data, type = "scatter3d", mode = "lines", alpha = 0.25,
+    color = I("black"),size = I(1), x=~rt, y=~mz, z=~intensity
+  ) %>% layout(scene = list(xaxis = list(title="Retention time (minutes)"), yaxis = list(title = "Mass-to-charge (mz)")))
+  htmlwidgets::saveWidget(widget = my_interactive_plot,
+                          file="test_plot.html")
+
+
 
 }
 
-  library(plotly)
-  plot_ly( type = "scatter3d",
-           mode = "lines",
-           x=ectracted_chroms[[1]]$X.rt.,
-           y=ectracted_chroms[[1]]$X.mz.,
-           z=ectracted_chroms[[1]]$X.intensity.)%>%
-    layout(xaxis = list(title = 'Retention time (milliseconds)'),
-           yaxis = list(title = 'Mass-to-charge')
-           )
 
 # SECTION 4: XCMS PRE-PROCESSING OF THE DATA
 {
