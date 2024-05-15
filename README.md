@@ -50,7 +50,8 @@ In this section we look at the different profiles we get from the two sets of ex
 </table>
 
 ## Section 3: [Collating the chromatogram and mass spectra](https://github.com/mpho-mafata/Chromatographic-data/blob/main/3.Collating%20the%20chromatogram%20and%20the%20mass%20spectrum.md)
-In this section we collate the retention time chromatogram and the mass spectrum for a complete profile.
+In this section we collate the retention time chromatogram and the mass spectrum for a complete profile. For this we use the variable *__point_count__* which has a list of the number of mass points detected at a given time (*__scan_acquisition_time__*). The code is available in [python](https://github.com/mpho-mafata/Chromatographic-data/blob/main/Chromatography.ipynb) and [R language](https://github.com/mpho-mafata/Chromatographic-data/blob/main/chromatography.R).
+
 <table>
  <tr>
 <td>
