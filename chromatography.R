@@ -339,7 +339,6 @@ for (k in 1:length(gcms_beers_data)){
   v3 = gcms_beers_data[[k]]$var$mass_values
   varsize = v3$varsize
   ndims   <- gcms_beers_data[[k]]$var$mass_values$ndims
-  nt      <- varsize[ndims]
   
   # make a dataframe for each sample of the rt, mz, and related intensity values
   chroms_list <- data.frame("mz","rt","intensity")
@@ -353,8 +352,8 @@ for (k in 1:length(gcms_beers_data)){
         count[ndims] <- 1	# change to count=(nx,ny,nz,...,1) to read 1 tstep
         
         # extract the values
-        mass_value <- ncvar_get(nc, v3, start = start, count= count)
         rt_value <- ncvar_get(nc, nc$var$scan_acquisition_time, start = start, count= count)
+        mass_value <- ncvar_get(nc, v3, start = start, count= count)
         mz_intensity <- ncvar_get(nc,nc$var$intensity_values, start = start, count= count)
         
         # add each triplet as a row to the chromatogram dataframe
