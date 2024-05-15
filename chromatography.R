@@ -365,6 +365,8 @@ for (k in 1:length(gcms_beers_data)){
     )
   }
   extracted_chroms[[k]] <- chroms_list
+  setwd("/Users/mphomafata/Documents/GitHub/Chromatographic-data/data")
+  writexl::write_xlsx(extracted_chroms[[k]], glue("{gcms_beers$filename[[k]]}.xlsx"))
   print(glue("Sample {k} chromatogram has been extratcted"))
   
 }
@@ -379,17 +381,28 @@ for (k in 1:length(gcms_beers_data)){
   gc_data$intensity <- as.numeric(gc_data$intensity)
 
   my_plot <- ggplot(gc_data, aes(x=rt, y=mz, color = intensity)) + geom_point(size = 0.5)+
-    theme_bw()+ xlab("Retention time (minutes)") + ylab("Mass-to-charge") + scale_colour_gradient(low = "green", high = "red", na.value = NA)
+    theme_bw()+ xlab("Retention time (minutes)") + ylab("Mass-to-charge") + scale_colour_gradient(low = "#bdeddf", high = "red", na.value = NA)
   ggsave(filename = "2d_plot.jpg", plot = my_plot)
 
   my_interactive_plot <- plot_ly(
-    gc_data, type = "scatter3d", mode = "lines", alpha = 0.25,
-    color = I("black"),size = I(1), x=~rt, y=~mz, z=~intensity
+    gc_data, type = "scatter3d", mode = "lines", alpha = 0.5,
+    color = I("#67203c"),size = I(1), x=~rt, y=~mz, z=~intensity
   ) %>% layout(scene = list(xaxis = list(title="Retention time (minutes)"), yaxis = list(title = "Mass-to-charge (mz)")))
   htmlwidgets::saveWidget(widget = my_interactive_plot,
                           file="test_plot.html")
 
-
+# Now create a file for all the peak
+  extracted_chroms[[1]]$X.rt. <- round(as.numeric(extracted_chroms[[1]]$X.rt.), digits = 0)
+  extracted_chroms[[2]]$X.rt. <- round(as.numeric(extracted_chroms[[1]]$X.rt.), digits = 0)
+  beer_chromatograms <- merge(x=extracted_chroms[[1]][-1,],
+                              y=extracted_chroms[[2]][-1,],
+                              by = c("X.rt.", "X.mz."))
+  for (i in 3:length(extracted_chroms)){
+    extracted_chroms[[i]]$X.rt. <- round(as.numeric(extracted_chroms[[i]]$X.rt.), digits = 0)
+    beer_chromatograms <- merge(x= beer_chromatograms,
+                                y = extracted_chroms[[i]][-1,],
+                                by = c("X.rt.", "X.mz."))
+  }
 
 }
 
