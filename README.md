@@ -55,14 +55,14 @@ In this section we collate the retention time chromatogram and the mass spectrum
 <table>
  <tr>
 <td>
-  <img height="300" width="400" src="./gc_msms_figures/3d_plot.png" hspace="20">
+  <img height="350" width="500" src="./gc_msms_figures/3d_plot.jpg" hspace="20">
  <br clear="left"/>
   <figcaption>3D Collated chromatogram and mass spectrum.</figcaption>
 </td>
 
 
 <td>
-  <img height="300" width="400" src="./gc_msms_figures/2d_plot.jpg" hspace="20">
+  <img height="350" width="400" src="./gc_msms_figures/2d_plot.jpg" hspace="20">
  <br clear="left"/>
    <figcaption>2D Collated chromatogram and mass spectrum.</figcaption>
 </td>
