@@ -37,3 +37,4 @@ test_plot_files/plotly-binding-4.10.3/plotly.js
 test_plot_files/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css
 test_plot_files/plotly-main-2.11.1/plotly-latest.min.js
 test_plot_files/typedarray-0.1/typedarray.min.js
+*.history
