@@ -57,3 +57,5 @@ ggsave(
   dpi = 300
 )
 print("MFA individual plot is complete!")
+
+plot.MFA(mfa_plot, choix = "var")
