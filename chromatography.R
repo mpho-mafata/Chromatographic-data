@@ -1,20 +1,30 @@
 # set the filepath
 rm(list = ls())#clear the environment to save on driver space and run faster
-setwd("/Users/mphomafata/Documents/GitHub/cody_analysis/chromatography")
+setwd("/Users/mphomafata/Documents/GitHub/Chromatographic-data")
+
+requiredPackages <- c(
+  # "ncdf4",
+                       "tidyverse",
+                      "plotly",
+                      "glue",
+                      "hrbrthemes",
+                      "htmlwidgets",
+                      "RNetCDF",
+                      "FactoMineR", # For producing  PCA
+                      "factoextra" # Additional visualization commands using fviz
+                      )
+
+# check if a library is already installed, then import
+for (p in requiredPackages) {
+  print(p)
+  if (require(p))
+    install.packages(p)
+    print(glue("There is now {p}"))
+  library(get(p))
+}
 
 # SECTION 1: Batch reading and plotting GC-MS/MS data from cdf files
 {
-  # Libraries needed to run the code
-  library("ncdf4")
-  library("tidyverse")
-  library("plotly")
-  library("glue")
-  library("hrbrthemes")
-  library("htmlwidgets")
-  library("RNetCDF")
-  library("FactoMineR") # For producing  PCA
-  library("factoextra") # Additional visualization commands using fviz
-  
   # import the data files as a list and import the contained data using ncdf4 package into a list.
   gcms_beers <-
     data.frame(
